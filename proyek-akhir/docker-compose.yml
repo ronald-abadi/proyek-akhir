@@ -1,0 +1,84 @@
+# Ronald Mulyono Abadi
+# DBS Foundation Coding Camp 2023, Learning Path DevOps Engineer
+# Kelas Expert, Belajar Membangun Arsitektur Microservices
+# Submission Proyek Akhir: Proyek Implementasi Asynchronous Communication
+# pada Aplikasi E-Commerce App
+
+# Menggunakan Docker Compose versi 2 atau lebih
+version: "3.7"
+
+# Memiliki tiga buah service: rabbitmq, order-service, dan shipping-service
+services:
+  rabbitmq:
+    # Menggunakan image rabbitmq:3.11-management dari Docker Hub
+    # Kurang lebih mengikuti materi 
+    # https://www.dicoding.com/academies/433/tutorials/31370?hl=rabbitmq
+    # Mohon maaf saya gunakan rabbitmq:3.8-management-alpine dan
+    # bukan rabbitmq:3.11-management seperti di instruksi karena
+    # kelihatannya yang rabbitmq:3.11-management ada bug
+    image: rabbitmq:3.8-management-alpine
+    container_name: rabbitmq
+    # Melakukan port mapping
+    ports:
+      - 5672:5672
+      - 15672:15672
+    # Tambahkan volumes  
+    volumes:
+      - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+      - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq      
+    # Tambahkan healthcheck untuk memastikan container bukan
+    # hanya dibuat, namun service rabbitmq-nya selesai jalan
+    healthcheck:
+      test: ["CMD", "nc", "-z", "rabbitmq", "5672"]
+      interval: 30s
+      timeout: 10s
+      retries: 5    
+    # Tambahkan networks
+    networks:
+      - dicoding
+    # Menerapkan restart policy selalu restart  
+    restart: always      
+  order-service:
+    # Menggunakan image order-service dari GitHub Packages
+    image: ghcr.io/ronald-abadi/order-service:latest
+    container_name: order-service-container
+    # Melakukan port mapping
+    ports:
+      - 3000:3000
+    # Pastikan rabbitmq jalan terlebih dahulu
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    # Tambahkan environment variables    
+    environment:
+      PORT: 3000
+      AMQP_URL: amqp://rabbitmq:5672
+    # Tambahkan networks  
+    networks:
+      - dicoding
+    # Menerapkan restart policy selalu restart  
+    restart: always
+  shipping-service:
+    # Menggunakan image shipping-service dari GitHub Packages
+    image: ghcr.io/ronald-abadi/shipping-service:latest
+    container_name: shipping-service-container
+    # Melakukan port mapping
+    ports:
+      - 3001:3001
+    # Pastikan rabbitmq jalan terlebih dahulu
+    depends_on:
+      rabbitmq:
+        condition: service_healthy      
+    # Tambahkan environment variables
+    environment:
+      PORT: 3001
+      AMQP_URL: amqp://rabbitmq:5672
+    # Tambahkan networks  
+    networks:
+      - dicoding
+    # Menerapkan restart policy selalu restart  
+    restart: always
+# Definisikan networks
+networks:
+  dicoding:
+    driver: bridge

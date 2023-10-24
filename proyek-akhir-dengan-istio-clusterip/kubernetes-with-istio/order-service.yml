@@ -1,0 +1,30 @@
+---
+# Ronald Mulyono Abadi
+# DBS Foundation Coding Camp 2023, Learning Path DevOps Engineer
+# Kelas Expert, Belajar Membangun Arsitektur Microservices
+# Submission Proyek Akhir: Proyek Implementasi Asynchronous Communication
+# pada Aplikasi E-Commerce App
+# File: order-service.yml
+
+apiVersion: v1
+
+# Membuat Service
+kind: Service
+
+metadata:
+  name: order-service-with-istio
+  labels:
+    app: order-service-with-istio
+    environment: proyek-akhir
+    
+spec:
+  # Selector dibuat seragam sama dengan labels yang di metadata
+  selector:
+    app: order-service-with-istio
+    environment: proyek-akhir
+  # Untuk port dan targetPort samakan dengan yang di Deployment
+  type: ClusterIP
+  ports:
+  - protocol: TCP
+    port: 3000
+    targetPort: 3000

@@ -1,0 +1,29 @@
+---
+# Ronald Mulyono Abadi
+# DBS Foundation Coding Camp 2023, Learning Path DevOps Engineer
+# Kelas Expert, Belajar Membangun Arsitektur Microservices
+# Submission Proyek Akhir: Proyek Implementasi Asynchronous Communication
+# pada Aplikasi E-Commerce App
+# File: istio-gateway.yml
+
+apiVersion: networking.istio.io/v1alpha3
+
+# Membuat Gateway
+kind: Gateway
+
+metadata:
+  name: istio-gateway
+  labels:
+    app: istio-gateway
+    environment: proyek-akhir
+
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"

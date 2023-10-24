@@ -1,0 +1,32 @@
+---
+# Ronald Mulyono Abadi
+# DBS Foundation Coding Camp 2023, Learning Path DevOps Engineer
+# Kelas Expert, Belajar Membangun Arsitektur Microservices
+# Submission Proyek Akhir: Proyek Implementasi Asynchronous Communication
+# pada Aplikasi E-Commerce App
+# File: shipping-service.yml
+
+apiVersion: v1
+
+# Membuat Service
+kind: Service
+
+metadata:
+  name: shipping-service
+  labels:
+    app: shipping-service
+    environment: proyek-akhir
+    
+spec:
+  # Selector dibuat seragam sama dengan labels yang di metadata
+  selector:
+    app: shipping-service
+    environment: proyek-akhir
+  # NodePort dengan nodePort 3001
+  # Untuk port dan targetPort samakan dengan yang di Deployment
+  type: NodePort
+  ports:
+  - protocol: TCP
+    port: 3001
+    targetPort: 3001
+    nodePort: 30005

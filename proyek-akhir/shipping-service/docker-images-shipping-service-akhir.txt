@@ -1,0 +1,8 @@
+REPOSITORY                              TAG       IMAGE ID       CREATED        SIZE
+shipping-service                        latest    677def073d91   4 hours ago    917MB
+ronaldabadi/shipping-service            latest    677def073d91   4 hours ago    917MB
+ghcr.io/ronald-abadi/shipping-service   latest    677def073d91   4 hours ago    917MB
+order-service                           latest    ac92a8e5e668   4 hours ago    917MB
+ronaldabadi/order-service               latest    ac92a8e5e668   4 hours ago    917MB
+ghcr.io/ronald-abadi/order-service      latest    ac92a8e5e668   4 hours ago    917MB
+gcr.io/k8s-minikube/kicbase             v0.0.40   c6cc01e60919   2 months ago   1.19GB

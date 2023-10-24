@@ -1,0 +1,83 @@
+---
+# Ronald Mulyono Abadi
+# DBS Foundation Coding Camp 2023, Learning Path DevOps Engineer
+# Kelas Expert, Belajar Membangun Arsitektur Microservices
+# Submission Proyek Akhir: Proyek Implementasi Asynchronous Communication
+# pada Aplikasi E-Commerce App
+# File: rabbitmq-statefulset.yml
+
+apiVersion: apps/v1
+
+# Membuat StatefulSet
+kind: StatefulSet
+
+metadata:
+  name: rabbitmq-with-istio
+  labels:
+    app: rabbitmq-with-istio
+    environment: proyek-akhir
+  
+spec:
+  serviceName: rabbitmq-with-istio
+  # Replicas 1 saja ya, resource laptop terbatas...
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rabbitmq-with-istio
+      environment: proyek-akhir
+  template:
+    metadata:
+      labels:
+        app: rabbitmq-with-istio
+        environment: proyek-akhir
+        sidecar.istio.io/inject: "true"
+    spec:
+      terminationGracePeriodSeconds: 15      
+      containers:
+      - name: rabbitmq-with-istio
+        # Mohon maaf saya gunakan rabbitmq:3.8-management-alpine dan
+        # bukan rabbitmq:3.11-management seperti di instruksi karena
+        # kelihatannya yang rabbitmq:3.11-management ada bug
+        image: rabbitmq:3.8-management-alpine
+        imagePullPolicy: IfNotPresent
+        # Melakukan port mapping
+        ports:
+        - name: amqp
+          containerPort: 5672
+          protocol: TCP
+        - name: http
+          containerPort: 15672
+          protocol: TCP
+        - name: discovery
+          containerPort: 4369
+          protocol: TCP
+        # volumeMounts disamakan dengan yang di bawah (lihat volumeClaimTemplates)  
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/rabbitmq
+        - name: log
+          mountPath: /var/log/rabbitmq
+  volumeClaimTemplates:
+  # Ini untuk volumeMounts di atas
+  - metadata:
+      name: data
+      labels:
+        app: rabbitmq-with-istio
+        environment: proyek-akhir
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "standard" # Maksudnya di lokal
+      resources:
+        requests:
+          storage: 1Gi # 1Gi saja ya, resource laptop terbatas...
+  - metadata:
+      name: log
+      labels:
+        app: rabbitmq-with-istio
+        environment: proyek-akhir
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "standard" # Maksudnya di lokal
+      resources:
+        requests:
+          storage: 1Gi # 1Gi saja ya, resource laptop terbatas...

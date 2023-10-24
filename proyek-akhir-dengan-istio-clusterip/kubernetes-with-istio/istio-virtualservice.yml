@@ -1,0 +1,34 @@
+---
+# Ronald Mulyono Abadi
+# DBS Foundation Coding Camp 2023, Learning Path DevOps Engineer
+# Kelas Expert, Belajar Membangun Arsitektur Microservices
+# Submission Proyek Akhir: Proyek Implementasi Asynchronous Communication
+# pada Aplikasi E-Commerce App
+# File: istio-virtualservice.yml
+
+apiVersion: networking.istio.io/v1alpha3
+
+# Membuat VirtualService
+kind: VirtualService
+
+metadata:
+  name: istio-virtualservice
+  labels:
+    app: istio-virtualservice
+    environment: proyek-akhir  
+  
+spec:
+  hosts:
+  - "*"
+  gateways:
+  # Samakan dengan yang di istio-gateway.yml
+  - istio-gateway
+  http:       
+  - match:
+    - uri:
+        exact: "/order"
+    route:
+    - destination:
+        host: order-service-with-istio
+        port:
+          number: 3000

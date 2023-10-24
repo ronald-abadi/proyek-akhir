@@ -1,0 +1,47 @@
+---
+# Ronald Mulyono Abadi
+# DBS Foundation Coding Camp 2023, Learning Path DevOps Engineer
+# Kelas Expert, Belajar Membangun Arsitektur Microservices
+# Submission Proyek Akhir: Proyek Implementasi Asynchronous Communication
+# pada Aplikasi E-Commerce App
+# File: order-deployment.yml
+
+apiVersion: apps/v1
+
+# Membuat Deployment
+kind: Deployment
+
+metadata:
+  name: order-deployment
+  labels:
+    app: order-service
+    environment: proyek-akhir
+    
+spec:
+  # Replicas 1 saja ya, resource laptop terbatas...
+  replicas: 1
+  # Batasi sejarah revisi 3 saja
+  revisionHistoryLimit: 3
+  # Selector dibuat seragam sama dengan labels yang di metadata
+  selector:
+    matchLabels:
+      app: order-service
+      environment: proyek-akhir
+  template:
+    metadata:
+      labels:
+        app: order-service
+        environment: proyek-akhir
+    spec:
+      containers:
+        - name: order-service-container
+          image: ghcr.io/ronald-abadi/order-service:latest
+          # Environment variables, sesuai instruksi di materi
+          env:
+          - name: PORT
+            value: "3000"
+          - name: AMQP_URL
+            value: amqp://192.168.49.2:30001
+          # Disamakan dengan Port yang di Docker-nya      
+          ports:
+          - containerPort: 3000

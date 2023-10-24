@@ -1,0 +1,38 @@
+---
+# Ronald Mulyono Abadi
+# DBS Foundation Coding Camp 2023, Learning Path DevOps Engineer
+# Kelas Expert, Belajar Membangun Arsitektur Microservices
+# Submission Proyek Akhir: Proyek Implementasi Asynchronous Communication
+# pada Aplikasi E-Commerce App
+# File: rabbitmq-service.yml
+
+apiVersion: v1
+
+# Membuat Service
+kind: Service
+
+metadata:
+  name: rabbitmq-with-istio
+  labels:
+    app: rabbitmq-with-istio
+    environment: proyek-akhir
+      
+spec:
+  type: ClusterIP
+  # Melakukan port mapping, disamakan dengan yang di StatefulSet
+  ports:
+  - port: 5672
+    targetPort: 5672
+    protocol: TCP
+    name: amqp    
+  - port: 15672
+    targetPort: 15672
+    protocol: TCP
+    name: http
+  - port: 4369
+    targetPort: 4369
+    protocol: TCP
+    name: discovery
+  selector:
+    app: rabbitmq-with-istio
+    environment: proyek-akhir
